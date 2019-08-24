@@ -1,0 +1,60 @@
+diff --git a/runtime/src/kmp_environment.cpp b/runtime/src/kmp_environment.cpp
+index 4e7cf8cd0587..29156da7e65b 100644
+--- a/runtime/src/kmp_environment.cpp
++++ b/runtime/src/kmp_environment.cpp
+@@ -61,10 +61,12 @@
+ #include "kmp_str.h"   // __kmp_str_*().
+ #include "kmp_i18n.h"
+ 
++#include "TargetConditionals.h"
++
+ #if KMP_OS_UNIX
+     #include <stdlib.h>    // getenv, setenv, unsetenv.
+     #include <string.h>    // strlen, strcpy.
+-    #if KMP_OS_DARWIN
++    #if KMP_OS_DARWIN && !TARGET_OS_IOS
+         #include <crt_externs.h>
+         #define environ (*_NSGetEnviron())
+     #else
+diff --git a/runtime/src/z_Linux_asm.s b/runtime/src/z_Linux_asm.s
+index 60130a4c0eff..9ef498c93ebd 100644
+--- a/runtime/src/z_Linux_asm.s
++++ b/runtime/src/z_Linux_asm.s
+@@ -17,6 +17,7 @@
+ // -----------------------------------------------------------------------
+ 
+ #include "kmp_config.h"
++#include "TargetConditionals.h"
+ 
+ #if KMP_ARCH_X86 || KMP_ARCH_X86_64
+ 
+@@ -166,7 +167,9 @@ ___kmp_unnamed_critical_addr:
+ __kmp_unnamed_critical_addr:
+         .4byte .gomp_critical_user_
+         .type __kmp_unnamed_critical_addr,@object
++#    if !TARGET_OS_IOS
+         .size __kmp_unnamed_critical_addr,4
++#    endif /* !TARGET_OS_IOS */
+ #  endif /* KMP_OS_DARWIN */
+ # endif /* KMP_ARCH_X86 */
+ 
+@@ -1784,7 +1787,9 @@ __kmp_invoke_microtask:
+     .global __kmp_unnamed_critical_addr
+ __kmp_unnamed_critical_addr:
+     .4byte .gomp_critical_user_
++#   if !TARGET_OS_IOS
+     .size __kmp_unnamed_critical_addr,4
++#   endif /* !TARGET_OS_IOS */
+ #endif /* KMP_ARCH_ARM */
+ 
+ #if KMP_ARCH_PPC64 || KMP_ARCH_AARCH64
+@@ -1795,7 +1800,9 @@ __kmp_unnamed_critical_addr:
+     .global __kmp_unnamed_critical_addr
+ __kmp_unnamed_critical_addr:
+     .8byte .gomp_critical_user_
++#   if !TARGET_OS_IOS
+     .size __kmp_unnamed_critical_addr,8
++#   endif /* !TARGET_OS_IOS */
+ #endif /* KMP_ARCH_PPC64 || KMP_ARCH_AARCH64 */
+ 
+ #if KMP_OS_LINUX
