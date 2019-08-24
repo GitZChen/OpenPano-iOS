@@ -1,0 +1,6 @@
+framework module libopano {
+  umbrella header "libopano.h"
+
+  export *
+  module * { export * }
+}
